@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete AI-Powered Learning System with MCQ & Flashcard Generation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e3f2fd 0%, #fff3e0 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #2c3e50;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            overflow: hidden;
+            border: 1px solid #e8eaf6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1976d2 0%, #ff8a65 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            opacity: 0.95;
+            font-size: 1.1rem;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            border: 1px solid #f5f5f5;
+        }
+
+        .student-info {
+            background: linear-gradient(135deg, #e8f4fd 0%, #fff8e1 100%);
+            border-left: 4px solid #42a5f5;
+        }
+
+        .upload-section {
+            background: linear-gradient(135deg, #e3f2fd 0%, #fce4ec 100%);
+            border-left: 4px solid #ff8a65;
+        }
+
+        .generate-section {
+            background: linear-gradient(135deg, #f3e5f5 0%, #e8f5e8 100%);
+            border-left: 4px solid #26a69a;
+        }
+
+        .results-section {
+            background: linear-gradient(135deg, #263238 0%, #37474f 100%);
+            color: white;
+            border-left: 4px solid #ff7043;
+        }
+
+        .section h2 {
+            color: #1565c0;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .results-section h2 {
+            color: #ffffff;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #37474f;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            background: #fafafa;
+            color: #2c3e50;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #1976d2;
+            box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.1);
+            background: #ffffff;
+        }
+
+        .upload-area {
+            border: 3px dashed #42a5f5;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            background: rgba(66, 165, 245, 0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            border-color: #1976d2;
+            background: rgba(25, 118, 210, 0.08);
+        }
+
+        .upload-area.dragover {
+            border-color: #1565c0;
+            background: rgba(21, 101, 192, 0.12);
+            transform: scale(1.02);
+        }
+
+        .upload-text {
+            font-size: 1.2rem;
+            color: #1976d2;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .upload-hint {
+            color: #546e7a;
+            font-size: 0.9rem;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #1976d2 0%, #42a5f5 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 8px rgba(25, 118, 210, 0.2);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(25, 118, 210, 0.3);
+            background: linear-gradient(135deg, #1565c0 0%, #1976d2 100%);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+            background: #bdbdbd;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #ff8a65 0%, #ff7043 100%);
+            margin-left: 10px;
+            box-shadow: 0 4px 8px rgba(255, 138, 101, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #ff7043 0%, #ff5722 100%);
+            box-shadow: 0 8px 16px rgba(255, 112, 67, 0.3);
+        }
+
+        .file-list {
+            margin-top: 20px;
+        }
+
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: rgba(255,255,255,0.8);
+            border-radius: 8px;
+            margin-bottom: 8px;
+            border: 1px solid #e8eaf6;
+            color: #37474f;
+        }
+
+        .file-item button {
+            background: #f44336;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.3s ease;
+        }
+
+        .file-item button:hover {
+            background: #d32f2f;
+        }
+
+        .status-message {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            font-weight: 600;
+        }
+
+        .status-success {
+            background: #e8f5e8;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+        }
+
+        .status-error {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #ffcdd2;
+        }
+
+        .status-info {
+            background: #e3f2fd;
+            color: #1565c0;
+            border: 1px solid #bbdefb;
+        }
+
+        .mcq-container, .flashcard-container {
+            margin-top: 20px;
+        }
+
+        .mcq-item {
+            background: rgba(255,255,255,0.15);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .mcq-question {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #ffffff;
+            line-height: 1.4;
+        }
+
+        .mcq-options {
+            list-style: none;
+        }
+
+        .mcq-options li {
+            padding: 12px 15px;
+            margin: 8px 0;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            background: rgba(255,255,255,0.1);
+            color: #e0e0e0;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .mcq-options li:hover {
+            background: rgba(255,255,255,0.2);
+            color: #ffffff;
+            transform: translateX(5px);
+        }
+
+        .mcq-options li.selected-correct {
+            background: rgba(76, 175, 80, 0.3) !important;
+            color: #ffffff !important;
+            border-color: #4caf50;
+            font-weight: 600;
+        }
+
+        .mcq-options li.selected-incorrect {
+            background: rgba(244, 67, 54, 0.3) !important;
+            color: #ffffff !important;
+            border-color: #f44336;
+            font-weight: 600;
+        }
+
+        .mcq-options li.show-correct {
+            background: rgba(76, 175, 80, 0.2) !important;
+            color: #ffffff !important;
+            border-color: #4caf50;
+            font-weight: 600;
+        }
+
+        .mcq-options li.disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .correct-answer-indicator {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 8px;
+            background: rgba(76, 175, 80, 0.2);
+            color: #ffffff;
+            font-size: 0.9rem;
+            border: 1px solid rgba(76, 175, 80, 0.4);
+            display: none;
+        }
+
+        .flashcard {
+            background: rgba(255,255,255,0.15);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: transform 0.3s ease, background 0.3s ease;
+            border: 1px solid rgba(255,255,255,0.2);
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .flashcard:hover {
+            transform: scale(1.02);
+            background: rgba(255,255,255,0.2);
+        }
+
+        .flashcard-front, .flashcard-back {
+            font-size: 1rem;
+            line-height: 1.5;
+            text-align: center;
+            color: #ffffff;
+        }
+
+        .flashcard-front {
+            font-weight: 600;
+        }
+
+        .flashcard-back {
+            font-weight: 400;
+            color: #e0e0e0;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top: 3px solid #ffffff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+        }
+
+        .ingest-status {
+            margin-top: 10px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        #file-input {
+            display: none;
+        }
+
+        .results-section h3 {
+            color: #ffffff;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎓 AI-Powered Learning System</h1>
+            <p>Upload documents, generate MCQs & flashcards with intelligent content analysis</p>
+        </div>
+
+        <div class="content">
+            <!-- Student Information Section -->
+            <div class="section student-info">
+                <h2>👤 Student Information</h2>
+                <div class="grid">
+                    <div class="form-group">
+                        <label for="student-name">Student Name:</label>
+                        <input type="text" id="student-name" placeholder="Enter your name">
+                    </div>
+                    <div class="form-group">
+                        <label for="subject-select">Select Subject:</label>
+                        <select id="subject-select">
+                            <option value="">Select a subject...</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Document Upload Section -->
+            <div class="section upload-section">
+                <h2>📁 Document Upload</h2>
+                <div class="form-group">
+                    <label for="category-select">Document Category:</label>
+                    <select id="category-select">
+                        <option value="">Select category...</option>
+                        <option value="syllabus">Syllabus</option>
+                        <option value="notes">Notes</option>
+                        <option value="past_papers">Past Papers</option>
+                    </select>
+                </div>
+                
+                <div class="upload-area" id="upload-area">
+                    <div class="upload-text">📤 Click to upload or drag and drop PDF files here</div>
+                    <div class="upload-hint">Upload syllabus, notes, and past papers (PDF format)</div>
+                    <input type="file" id="file-input" accept=".pdf" multiple>
+                </div>
+
+                <div class="file-list" id="file-list"></div>
+                
+                <button class="btn" id="upload-btn" disabled>Upload Files</button>
+                <button class="btn btn-secondary" id="ingest-btn" disabled>Process Documents</button>
+                
+                <div class="ingest-status" id="ingest-status"></div>
+            </div>
+
+            <!-- Generation Section -->
+            <div class="section generate-section">
+                <h2>🧠 Generate Learning Materials</h2>
+                <div class="form-group">
+                    <label for="topic-input">Topic/Query:</label>
+                    <input type="text" id="topic-input" placeholder="e.g., neural networks, algorithms, calculus">
+                </div>
+                
+                <div class="grid">
+                    <div>
+                        <button class="btn" id="generate-mcq-btn" disabled>Generate MCQs</button>
+                    </div>
+                    <div>
+                        <div class="form-group">
+                            <label for="flashcard-count">Number of Flashcards:</label>
+                            <select id="flashcard-count">
+                                <option value="5">5 cards</option>
+                                <option value="8" selected>8 cards</option>
+                                <option value="10">10 cards</option>
+                                <option value="12">12 cards</option>
+                            </select>
+                        </div>
+                        <button class="btn" id="generate-flashcard-btn" disabled>Generate Flashcards</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div class="section results-section" id="results-section" style="display: none;">
+                <h2>📊 Generated Content</h2>
+                <div id="results-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configuration
+        const API_BASE_URL = window.location.origin;
+        
+        // Global state
+        let selectedFiles = [];
+        let availableSubjects = [];
+        let currentSubject = '';
+        let isIngested = false;
+
+        // DOM elements
+        const studentName = document.getElementById('student-name');
+        const subjectSelect = document.getElementById('subject-select');
+        const categorySelect = document.getElementById('category-select');
+        const uploadArea = document.getElementById('upload-area');
+        const fileInput = document.getElementById('file-input');
+        const fileList = document.getElementById('file-list');
+        const uploadBtn = document.getElementById('upload-btn');
+        const ingestBtn = document.getElementById('ingest-btn');
+        const ingestStatus = document.getElementById('ingest-status');
+        const topicInput = document.getElementById('topic-input');
+        const generateMcqBtn = document.getElementById('generate-mcq-btn');
+        const generateFlashcardBtn = document.getElementById('generate-flashcard-btn');
+        const flashcardCount = document.getElementById('flashcard-count');
+        const resultsSection = document.getElementById('results-section');
+        const resultsContent = document.getElementById('results-content');
+
+        // Initialize app
+        async function initializeApp() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/subjects`);
+                const data = await response.json();
+                availableSubjects = data.subjects;
+                
+                // Populate subject dropdown
+                subjectSelect.innerHTML = '<option value="">Select a subject...</option>';
+                availableSubjects.forEach(subject => {
+                    const option = document.createElement('option');
+                    option.value = subject;
+                    option.textContent = subject;
+                    subjectSelect.appendChild(option);
+                });
+            } catch (error) {
+                showStatus('Failed to load subjects. Please check if the API server is running.', 'error');
+            }
+        }
+
+        // Event listeners
+        subjectSelect.addEventListener('change', (e) => {
+            currentSubject = e.target.value;
+            updateButtonStates();
+        });
+
+        categorySelect.addEventListener('change', updateButtonStates);
+
+        uploadArea.addEventListener('click', () => fileInput.click());
+        uploadArea.addEventListener('dragover', handleDragOver);
+        uploadArea.addEventListener('dragleave', handleDragLeave);
+        uploadArea.addEventListener('drop', handleDrop);
+
+        fileInput.addEventListener('change', handleFileSelect);
+        uploadBtn.addEventListener('click', uploadFiles);
+        ingestBtn.addEventListener('click', ingestDocuments);
+        generateMcqBtn.addEventListener('click', generateMCQs);
+        generateFlashcardBtn.addEventListener('click', generateFlashcards);
+
+        // File handling functions
+        function handleDragOver(e) {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        }
+
+        function handleDragLeave(e) {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = Array.from(e.dataTransfer.files).filter(file => file.type === 'application/pdf');
+            addFiles(files);
+        }
+
+        function handleFileSelect(e) {
+            const files = Array.from(e.target.files);
+            addFiles(files);
+        }
+
+        function addFiles(files) {
+            const pdfFiles = files.filter(file => file.type === 'application/pdf');
+            selectedFiles = [...selectedFiles, ...pdfFiles];
+            updateFileList();
+            updateButtonStates();
+        }
+
+        function removeFile(index) {
+            selectedFiles.splice(index, 1);
+            updateFileList();
+            updateButtonStates();
+        }
+
+        function updateFileList() {
+            fileList.innerHTML = '';
+            selectedFiles.forEach((file, index) => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.innerHTML = `
+                    <span>📄 ${file.name}</span>
+                    <button onclick="removeFile(${index})">Remove</button>
+                `;
+                fileList.appendChild(fileItem);
+            });
+        }
+
+        function updateButtonStates() {
+            const hasSubject = currentSubject !== '';
+            const hasCategory = categorySelect.value !== '';
+            const hasFiles = selectedFiles.length > 0;
+            const hasTopic = topicInput.value.trim() !== '';
+
+            uploadBtn.disabled = !(hasSubject && hasCategory && hasFiles);
+            ingestBtn.disabled = !hasSubject;
+            generateMcqBtn.disabled = !(hasSubject && hasTopic);
+            generateFlashcardBtn.disabled = !(hasSubject && hasTopic);
+        }
+
+        // API functions
+        async function uploadFiles() {
+            if (!currentSubject || !categorySelect.value || selectedFiles.length === 0) {
+                showStatus('Please select subject, category, and files to upload.', 'error');
+                return;
+            }
+
+            uploadBtn.disabled = true;
+            uploadBtn.innerHTML = '<span class="loading"></span>Uploading...';
+
+            try {
+                for (const file of selectedFiles) {
+                    const formData = new FormData();
+                    formData.append('category', categorySelect.value);
+                    formData.append('file', file);
+
+                    const response = await fetch(`${API_BASE_URL}/upload/${currentSubject}`, {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (!response.ok) {
+                        const error = await response.json();
+                        throw new Error(error.error || 'Upload failed');
+                    }
+                }
+
+                showStatus(`Successfully uploaded ${selectedFiles.length} file(s) to ${currentSubject}/${categorySelect.value}`, 'success');
+                selectedFiles = [];
+                updateFileList();
+                isIngested = false;
+                
+            } catch (error) {
+                showStatus(`Upload failed: ${error.message}`, 'error');
+            } finally {
+                uploadBtn.disabled = false;
+                uploadBtn.innerHTML = 'Upload Files';
+                updateButtonStates();
+            }
+        }
+
+        async function ingestDocuments() {
+            if (!currentSubject) {
+                showStatus('Please select a subject first.', 'error');
+                return;
+            }
+
+            ingestBtn.disabled = true;
+            ingestBtn.innerHTML = '<span class="loading"></span>Processing...';
+            showIngestStatus('Processing documents... This may take several minutes for large document sets.', 'info');
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/ingest/${currentSubject}`, {
+                    method: 'POST'
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Ingestion failed');
+                }
+
+                const result = await response.json();
+                showIngestStatus(`Successfully processed documents for ${currentSubject}. Ready to generate content!`, 'success');
+                isIngested = true;
+                updateButtonStates();
+                
+            } catch (error) {
+                showIngestStatus(`Processing failed: ${error.message}`, 'error');
+            } finally {
+                ingestBtn.disabled = false;
+                ingestBtn.innerHTML = 'Process Documents';
+            }
+        }
+
+        async function generateMCQs() {
+            const topic = topicInput.value.trim();
+            if (!currentSubject || !topic) {
+                showStatus('Please select subject and enter a topic.', 'error');
+                return;
+            }
+
+            generateMcqBtn.disabled = true;
+            generateMcqBtn.innerHTML = '<span class="loading"></span>Generating MCQs...';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/generate/mcqs/${currentSubject}?query=${encodeURIComponent(topic)}`, {
+                    method: 'POST'
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'MCQ generation failed');
+                }
+
+                const result = await response.json();
+                displayMCQs(result.mcqs);
+                
+            } catch (error) {
+                showStatus(`MCQ generation failed: ${error.message}`, 'error');
+            } finally {
+                generateMcqBtn.disabled = false;
+                generateMcqBtn.innerHTML = 'Generate MCQs';
+                updateButtonStates();
+            }
+        }
+
+        async function generateFlashcards() {
+            const topic = topicInput.value.trim();
+            const numCards = parseInt(flashcardCount.value);
+            
+            if (!currentSubject || !topic) {
+                showStatus('Please select subject and enter a topic.', 'error');
+                return;
+            }
+
+            generateFlashcardBtn.disabled = true;
+            generateFlashcardBtn.innerHTML = '<span class="loading"></span>Generating Flashcards...';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/generate/flashcards/${currentSubject}?query=${encodeURIComponent(topic)}&num_cards=${numCards}`, {
+                    method: 'POST'
+                });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'Flashcard generation failed');
+                }
+
+                const result = await response.json();
+                displayFlashcards(result.flashcards);
+                
+            } catch (error) {
+                showStatus(`Flashcard generation failed: ${error.message}`, 'error');
+            } finally {
+                generateFlashcardBtn.disabled = false;
+                generateFlashcardBtn.innerHTML = 'Generate Flashcards';
+                updateButtonStates();
+            }
+        }
+
+        // Display functions
+        function displayMCQs(mcqs) {
+            if (!mcqs || mcqs.length === 0) {
+                showStatus('No MCQs generated. Try a different topic or ensure documents are processed.', 'error');
+                return;
+            }
+
+            let html = `<h3>📝 Generated MCQs (${mcqs.length})</h3><div class="mcq-container">`;
+            
+            mcqs.forEach((mcq, index) => {
+                html += `
+                    <div class="mcq-item">
+                        <div class="mcq-question">${index + 1}. ${mcq.question}</div>
+                        <ul class="mcq-options">
+                            ${mcq.options.map((option, i) => `
+                                <li data-mcq="${index}" data-option="${String.fromCharCode(65 + i)}" data-correct="${mcq.correct_option}" onclick="handleMCQClick(this)">
+                                    ${String.fromCharCode(65 + i)}. ${option}
+                                </li>
+                            `).join('')}
+                        </ul>
+                        <div class="correct-answer-indicator" id="correct-${index}">
+                            ✓ Correct Answer: ${mcq.correct_option}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '</div>';
+            resultsContent.innerHTML = html;
+            resultsSection.style.display = 'block';
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function displayFlashcards(flashcards) {
+            if (!flashcards || flashcards.length === 0) {
+                showStatus('No flashcards generated. Try a different topic or ensure documents are processed.', 'error');
+                return;
+            }
+
+            let html = `<h3>🃏 Generated Flashcards (${flashcards.length})</h3><div class="flashcard-container">`;
+            
+            flashcards.forEach((card, index) => {
+                html += `
+                    <div class="flashcard" onclick="flipCard(this)">
+                        <div class="flashcard-front">
+                            <strong>Q${index + 1}:</strong> ${card.front}
+                        </div>
+                        <div class="flashcard-back" style="display: none;">
+                            <strong>A:</strong> ${card.back}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += '<p style="margin-top: 15px; opacity: 0.8; color: #e0e0e0;">💡 Click on flashcards to flip them!</p></div>';
+            resultsContent.innerHTML = html;
+            resultsSection.style.display = 'block';
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function handleMCQClick(element) {
+            const mcqIndex = element.dataset.mcq;
+            const selectedOption = element.dataset.option;
+            const correctOption = element.dataset.correct;
+            
+            // Get all options for this MCQ
+            const allOptions = document.querySelectorAll(`li[data-mcq="${mcqIndex}"]`);
+            
+            // Disable all options
+            allOptions.forEach(option => {
+                option.classList.add('disabled');
+                option.onclick = null;
+            });
+            
+            // Show selected answer
+            if (selectedOption === correctOption) {
+                element.classList.add('selected-correct');
+            } else {
+                element.classList.add('selected-incorrect');
+                
+                // Highlight the correct answer
+                const correctElement = document.querySelector(`li[data-mcq="${mcqIndex}"][data-option="${correctOption}"]`);
+                if (correctElement) {
+                    correctElement.classList.add('show-correct');
+                }
+            }
+            
+            // Show the correct answer indicator
+            const indicator = document.getElementById(`correct-${mcqIndex}`);
+            if (indicator) {
+                indicator.style.display = 'block';
+            }
+        }
+
+        function flipCard(cardElement) {
+            const front = cardElement.querySelector('.flashcard-front');
+            const back = cardElement.querySelector('.flashcard-back');
+            
+            if (front.style.display === 'none') {
+                front.style.display = 'block';
+                back.style.display = 'none';
+            } else {
+                front.style.display = 'none';
+                back.style.display = 'block';
+            }
+        }
+
+        // Utility functions
+        function showStatus(message, type) {
+            let statusEl = document.querySelector('.status-message');
+            if (!statusEl) {
+                statusEl = document.createElement('div');
+                statusEl.className = 'status-message';
+                document.querySelector('.upload-section').appendChild(statusEl);
+            }
+            
+            statusEl.className = `status-message status-${type}`;
+            statusEl.textContent = message;
+            
+            if (type === 'success') {
+                setTimeout(() => {
+                    if (statusEl.parentNode) {
+                        statusEl.remove();
+                    }
+                }, 5000);
+            }
+        }
+
+        function showIngestStatus(message, type) {
+            ingestStatus.className = `ingest-status status-${type}`;
+            ingestStatus.textContent = message;
+            ingestStatus.style.display = 'block';
+        }
+
+        topicInput.addEventListener('input', updateButtonStates);
+
+        window.removeFile = removeFile;
+
+        initializeApp();
+    </script>
+</body>
+</html>
