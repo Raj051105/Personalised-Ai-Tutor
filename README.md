@@ -127,28 +127,22 @@ curl -X POST "http://127.0.0.1:8000/generate/flashcards/CS3491?query=neural%20ne
 ## 📁 Project Structure
 
 ```
-adaptive-learning-rag/
-├── app.py                    # FastAPI application
-├── config.py                 # Configuration settings
-├── ingest.py                 # Document ingestion pipeline
-├── retriever.py              # Vector database queries
-├── mcq_generator.py          # MCQ generation logic
-├── flashcard_generator.py    # Flashcard generation logic
-├── utils/
-│   ├── text_utils.py         # Text processing utilities
-│   └── ocr_utils.py          # OCR functionality
-├── data/                     # Subject-specific document storage
-│   ├── CS3491/
-│   │   ├── syllabus/
-│   │   ├── notes/
-│   │   └── past_papers/
-│   └── MA3251/
-│       ├── syllabus/
-│       ├── notes/
-│       └── past_papers/
-├── chroma_dbs/               # Vector databases per subject
-├── requirements.txt
-└── README.md
+Personalised-Ai-Tutor/
+├── Notes/                         # External notes directory
+└── RAG-backend/                   # Main application directory
+    ├── chroma_db/                 # Vector database storage
+    │   └── CS3491/                # Subject-specific vector DB
+    │       └── 94d8adf8-80bf-427d-a5ac-16e330b6a5ff/  # ChromaDB collection
+    ├── data/                      # Document storage by subject
+    │   └── CS3491/                # Example subject folder
+    │       ├── notes/             # Lecture notes and study materials
+    │       ├── past_papers/       # Previous exam papers
+    │       └── syllabus/          # Course syllabus documents
+    ├── static/                    # Static web assets (CSS, JS, images)
+    ├── test/                      # Test files and fixtures
+    ├── utils/                     # Utility modules
+    │   └── __pycache__/          # Python bytecode cache
+    └── __pycache__/              # Main application bytecode cache
 ```
 
 
